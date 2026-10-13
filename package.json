@@ -1,0 +1,12 @@
+{
+  "name": "coyenick-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mobile-friendly cat care app: reminders, medication, health records and weight for every cat.",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": { "node": ">=20" }
+}
