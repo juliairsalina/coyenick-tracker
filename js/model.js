@@ -6,14 +6,14 @@ import { addDays, addMonths, diffDays, monthEnd, monthKey, monthStart, nowTime, 
 // ---------------------------------------------------------------------------
 
 export const EVENT_TYPES = {
-  vaccine: { label: 'Vaccination', icon: '💉', color: 'vaccine', treatment: true },
-  flea: { label: 'Flea treatment (kutu)', short: 'Flea', icon: '🪲', color: 'flea', treatment: true },
-  deworm: { label: 'Deworming (cacing)', short: 'Deworming', icon: '🪱', color: 'deworm', treatment: true },
-  vet: { label: 'Vet appointment', short: 'Vet', icon: '🏥', color: 'vet' },
-  task: { label: 'To-do', icon: '✅', color: 'task' },
-  custom: { label: 'Custom event', short: 'Custom', icon: '⭐', color: 'custom' },
-  weight: { label: 'Weight & photo', short: 'Weigh-in', icon: '⚖️', color: 'weight' },
-  med: { label: 'Medication', icon: '💊', color: 'med' },
+  vaccine: { label: 'Vaccination', icon: 'vaccine', color: 'vaccine', treatment: true },
+  flea: { label: 'Flea treatment (kutu)', short: 'Flea', icon: 'flea', color: 'flea', treatment: true },
+  deworm: { label: 'Deworming (cacing)', short: 'Deworming', icon: 'deworm', color: 'deworm', treatment: true },
+  vet: { label: 'Vet appointment', short: 'Vet', icon: 'vet', color: 'vet' },
+  task: { label: 'To-do', icon: 'task', color: 'task' },
+  custom: { label: 'Custom event', short: 'Custom', icon: 'custom', color: 'custom' },
+  weight: { label: 'Weight & photo', short: 'Weigh-in', icon: 'weight', color: 'weight' },
+  med: { label: 'Medication', icon: 'med', color: 'med' },
 };
 
 export const REPEATS = {
@@ -195,28 +195,28 @@ export function remindersDue(state, today = todayKey()) {
 
 export const RECORD_TYPES = {
   weight: {
-    label: 'Weight', icon: '⚖️', group: 'daily',
+    label: 'Weight', icon: 'weight', group: 'daily',
     fields: [
       { key: 'weight', type: 'weight', label: 'Weight', required: true },
       { key: 'photo', type: 'photo', label: 'Monthly photo' },
     ],
   },
   stool: {
-    label: 'Stool', hint: 'Taik', icon: '💩', group: 'health',
+    label: 'Stool', hint: 'Taik', icon: 'stool', group: 'health',
     fields: [{
       key: 'status', type: 'chips', label: 'How did it look?', required: true,
       options: { normal: 'Normal', soft: 'Soft', diarrhea: 'Diarrhoea', constipation: 'Constipation', blood: 'Blood' },
     }],
   },
   eyes: {
-    label: 'Eyes', hint: 'Mata', icon: '👁️', group: 'health',
+    label: 'Eyes', hint: 'Mata', icon: 'eyes', group: 'health',
     fields: [{
       key: 'status', type: 'chips', label: 'Eyes', required: true,
       options: { normal: 'Normal', discharge: 'Discharge', red: 'Red', swollen: 'Swollen' },
     }],
   },
   asthma: {
-    label: 'Asthma', icon: '🫁', group: 'health',
+    label: 'Asthma', icon: 'asthma', group: 'health',
     fields: [
       { key: 'status', type: 'chips', label: 'Severity', required: true, options: { mild: 'Mild', moderate: 'Moderate', severe: 'Severe' } },
       { key: 'episodes', type: 'stepper', label: 'Episodes today', min: 1, default: 1 },
@@ -224,21 +224,21 @@ export const RECORD_TYPES = {
     ],
   },
   appetite: {
-    label: 'Appetite', icon: '🍽️', group: 'health',
+    label: 'Appetite', icon: 'appetite', group: 'health',
     fields: [{
       key: 'status', type: 'chips', label: 'Appetite', required: true,
       options: { normal: 'Normal', less: 'Eating less', more: 'Eating more', none: 'Not eating' },
     }],
   },
   urination: {
-    label: 'Urination', icon: '💧', group: 'health',
+    label: 'Urination', icon: 'urination', group: 'health',
     fields: [{
       key: 'status', type: 'chips', label: 'Urination', required: true,
       options: { normal: 'Normal', frequent: 'Frequent', outside: 'Outside litter box', difficulty: 'Difficulty / straining', none: 'Not peeing' },
     }],
   },
   food: {
-    label: 'Food', icon: '🥫', group: 'daily',
+    label: 'Food', icon: 'food', group: 'daily',
     fields: [
       { key: 'status', type: 'chips', label: 'Type', required: true, options: { wet: 'Wet food', dry: 'Dry food', treats: 'Treats', mixed: 'Mixed' } },
       { key: 'brand', type: 'text', label: 'Brand', autofill: true, placeholder: 'e.g. Royal Canin' },
@@ -246,7 +246,7 @@ export const RECORD_TYPES = {
     ],
   },
   symptoms: {
-    label: 'Other symptoms', short: 'Symptoms', icon: '🤒', group: 'health',
+    label: 'Other symptoms', short: 'Symptoms', icon: 'symptoms', group: 'health',
     fields: [{
       key: 'status', type: 'multichips', label: 'What did you notice?', required: true,
       options: {
@@ -256,7 +256,7 @@ export const RECORD_TYPES = {
     }],
   },
   medical: {
-    label: 'Vet visit & history', short: 'Medical', icon: '📋', group: 'care',
+    label: 'Vet visit & history', short: 'Medical', icon: 'medical', group: 'care',
     fields: [
       { key: 'status', type: 'chips', label: 'Kind', required: true, options: { visit: 'Vet visit', diagnosis: 'Diagnosis', prescription: 'Prescription', document: 'Document' } },
       { key: 'title', type: 'text', label: 'Title', placeholder: 'e.g. Annual check-up' },

@@ -3,6 +3,7 @@ import { bindItemActions, openCatForm, openEventForm, openMedForm, openQuickAdd,
 import { stopMed } from '../store.js';
 import { $, $$, avatar, confirmSheet, emptyState, openSheet, safely, sheetHeader, toast } from '../ui.js';
 import { addDays, ageText, esc, fmtDate, fmtMonth, fmtTime, fmtWeight, monthKey, todayKey } from '../utils.js';
+import { icon } from '../icons.js';
 import { agendaRow } from './home.js';
 import { bindRecordRows, recordRow, trendsHtml } from './records.js';
 
@@ -21,9 +22,9 @@ export function renderCats(root, st) {
             <span class="muted">${[sexLabel(c.sex), ageText(c.birthday), fmtWeight(currentWeight(st, c.id), st.settings.units)].filter(Boolean).join(' · ')}</span>
             ${c.conditions ? `<span class="tag">${esc(c.conditions)}</span>` : ''}
           </span>
-          <span class="chev" aria-hidden="true">›</span>
+          <span class="chev">${icon('next')}</span>
         </a></li>`).join('')}
-    </ul>` : emptyState('🐱', 'No cats yet', 'Add a profile for each of your cats.')}
+    </ul>` : emptyState('paw', 'No cats yet', 'Add a profile for each of your cats.')}
     <button class="btn btn-primary btn-block" data-add-cat>+ Add a cat</button>`;
   $('[data-add-cat]', root).onclick = () => openCatForm({ onSaved: (id) => { location.hash = `#cat/${id}`; } });
 }
@@ -35,7 +36,7 @@ function info(label, value) {
 export function renderCatProfile(root, st, catId) {
   const cat = st.cats.find((c) => c.id === catId);
   if (!cat) {
-    root.innerHTML = emptyState('🤔', 'Cat not found', 'It may have been deleted.', '<a class="btn btn-primary" href="#cats">Back to cats</a>');
+    root.innerHTML = emptyState('paw', 'Cat not found', 'It may have been deleted.', '<a class="btn btn-primary" href="#cats">Back to cats</a>');
     return;
   }
   const today = todayKey();
@@ -54,7 +55,7 @@ export function renderCatProfile(root, st, catId) {
 
   root.innerHTML = `
     <header class="page-head">
-      <a class="icon-btn" href="#cats" aria-label="Back">‹</a>
+      <a class="icon-btn" href="#cats" aria-label="Back">${icon('back')}</a>
       <h1 class="sr-only">${esc(cat.name)}</h1>
       <button class="btn btn-small btn-ghost" data-edit>Edit</button>
     </header>
@@ -83,8 +84,8 @@ export function renderCatProfile(root, st, catId) {
     ${cat.allergies || cat.conditions ? `
       <section class="card card-warn">
         <dl>
-          ${info('⚠️ Allergies', esc(cat.allergies))}
-          ${info('🩺 Conditions', esc(cat.conditions))}
+          ${info('Allergies', esc(cat.allergies))}
+          ${info('Conditions', esc(cat.conditions))}
         </dl>
       </section>` : ''}
 
@@ -98,7 +99,7 @@ export function renderCatProfile(root, st, catId) {
       ${currentMeds.length ? `<ul class="items">${currentMeds.map((m) => `
         <li class="item item-med">
           <button class="item-main" data-med="${m.id}">
-            <span class="item-icon" aria-hidden="true">💊</span>
+            <span class="item-icon">${icon('med')}</span>
             <span class="item-text">
               <span class="item-title">${esc(m.name)}${m.dose ? ` <span class="item-cat">· ${esc(m.dose)}</span>` : ''}</span>
               <span class="item-sub">${m.times.map(fmtTime).join(', ')} · ${m.start > today ? `starts ${fmtDate(m.start)}` : m.end ? `until ${fmtDate(m.end)}` : 'ongoing'}</span>
@@ -107,7 +108,7 @@ export function renderCatProfile(root, st, catId) {
           <div class="item-actions"><button class="btn btn-small btn-ghost" data-stop-med="${m.id}">Stop</button></div>
         </li>`).join('')}</ul>` : '<p class="muted">No current medication.</p>'}
       ${pastMeds.length ? `<details><summary>Past medication (${pastMeds.length})</summary><ul class="items">${pastMeds.map((m) => `
-        <li class="item"><button class="item-main" data-med="${m.id}"><span class="item-icon" aria-hidden="true">💊</span><span class="item-text">
+        <li class="item"><button class="item-main" data-med="${m.id}"><span class="item-icon">${icon('med')}</span><span class="item-text">
           <span class="item-title">${esc(m.name)}${m.dose ? ` · ${esc(m.dose)}` : ''}</span>
           <span class="item-sub">${fmtDate(m.start)} – ${fmtDate(m.end)}</span></span></button></li>`).join('')}</ul></details>` : ''}
     </section>
@@ -116,16 +117,16 @@ export function renderCatProfile(root, st, catId) {
       <h2>Vaccines, flea & deworming</h2>
       ${schedules.length ? `<ul class="schedules">${schedules.map((e) => {
         const next = eventDates(e, addDays(today, -60), addDays(today, 800)).find((d) => !e.done?.[d]);
-        return `<li><button class="link-row" data-event="${e.id}">${EVENT_TYPES[e.type].icon} <strong>${esc(e.title)}</strong><span class="muted">${next ? `${next < today ? 'Overdue' : 'Next'}: ${fmtDate(next)}` : 'No upcoming date'}</span></button></li>`;
+        return `<li><button class="link-row" data-event="${e.id}"><strong>${esc(e.title)}</strong><span class="muted">${next ? `${next < today ? 'Overdue' : 'Next'}: ${fmtDate(next)}` : 'No upcoming date'}</span></button></li>`;
       }).join('')}</ul>` : ''}
       ${treatments.length ? `<table class="history">
         <thead><tr><th>Given</th><th>Treatment</th></tr></thead>
-        <tbody>${treatments.slice(0, 12).map((t) => `<tr><td>${fmtDate(t.given, { day: 'numeric', month: 'short', year: '2-digit' })}</td><td>${EVENT_TYPES[t.ev.type].icon} ${esc(t.ev.title)}${t.notes ? `<br><span class="muted small">${esc(t.notes)}</span>` : ''}</td></tr>`).join('')}</tbody>
+        <tbody>${treatments.slice(0, 12).map((t) => `<tr><td>${fmtDate(t.given, { day: 'numeric', month: 'short', year: '2-digit' })}</td><td>${esc(t.ev.title)}${t.notes ? `<br><span class="muted small">${esc(t.notes)}</span>` : ''}</td></tr>`).join('')}</tbody>
       </table>` : '<p class="muted">No treatments recorded yet. Schedule one and tap <em>Done</em> when it is given.</p>'}
       <div class="btn-row wrap">
-        <button class="btn btn-small btn-ghost" data-new-event="vaccine">💉 Vaccine</button>
-        <button class="btn btn-small btn-ghost" data-new-event="flea">🪲 Flea</button>
-        <button class="btn btn-small btn-ghost" data-new-event="deworm">🪱 Deworm</button>
+        <button class="btn btn-small btn-ghost" data-new-event="vaccine">+ Vaccine</button>
+        <button class="btn btn-small btn-ghost" data-new-event="flea">+ Flea</button>
+        <button class="btn btn-small btn-ghost" data-new-event="deworm">+ Deworm</button>
       </div>
     </section>
 
@@ -142,7 +143,7 @@ export function renderCatProfile(root, st, catId) {
     </section>
 
     <section class="card">
-      <div class="section-head"><h2>Recent records</h2><a class="link-btn" href="#report/${cat.id}/${monthKey(today)}">📄 Report</a></div>
+      <div class="section-head"><h2>Recent records</h2><a class="link-btn" href="#report/${cat.id}/${monthKey(today)}">Report</a></div>
       ${recent.length ? `<ul class="items">${recent.map((r) => recordRow(r, st, { showCat: false })).join('')}</ul>` : '<p class="muted">No records yet.</p>'}
     </section>
 

@@ -34,7 +34,7 @@ export function checkReminders() {
     const key = `dose:${item.id}`;
     if (item.time <= now && !st.notified[key]) {
       store.markNotified(key);
-      show(`💊 ${catName(item.catId)}: ${item.title}`, `${item.subtitle || 'Dose'} due at ${fmtTime(item.time)}`, key);
+      show(`${catName(item.catId)}: ${item.title}`, `${item.subtitle || 'Dose'} due at ${fmtTime(item.time)}`, key);
     }
   }
 
@@ -44,7 +44,7 @@ export function checkReminders() {
     if (st.notified[key]) continue;
     store.markNotified(key);
     const when = daysBefore === 0 ? 'today' : daysBefore === 1 ? 'tomorrow' : `in ${daysBefore} days (${fmtDate(item.date)})`;
-    show(`${EVENT_TYPES[item.type]?.icon ?? '📅'} ${catName(item.catId)}: ${item.title}`, `Due ${when}`, key);
+    show(`${catName(item.catId)}: ${item.title}`, `Due ${when}`, key);
   }
 }
 
@@ -66,7 +66,7 @@ export function emailDigestUrl(st = store.getState()) {
     lines.push('', 'Medication:');
     meds.forEach((m) => lines.push(`• ${cat(m.catId)}: ${m.name} ${m.dose || ''} at ${m.times.map(fmtTime).join(', ')}${m.end ? ` until ${fmtDate(m.end)}` : ''}`));
   }
-  const subject = `🐾 Cat care reminders — ${fmtDate(today)}`;
+  const subject = `Cat care reminders — ${fmtDate(today)}`;
   return `mailto:${encodeURIComponent(st.settings.email || '')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
 }
 
@@ -121,7 +121,7 @@ export function buildIcs(st = store.getState()) {
 
   for (const ev of st.events) {
     if (!st.cats.some((c) => c.id === ev.catId)) continue;
-    const title = `${EVENT_TYPES[ev.type]?.icon ?? ''} ${cat(ev.catId)}: ${ev.title}`.trim();
+    const title = `${cat(ev.catId)}: ${ev.title}`;
     out.push('BEGIN:VEVENT', `UID:${ev.id}@coyenick-tracker`, `DTSTAMP:${stamp}`, `SUMMARY:${icsText(title)}`);
     if (ev.time) out.push(`DTSTART:${icsDateTime(ev.date, ev.time)}`, 'DURATION:PT30M');
     else out.push(`DTSTART;VALUE=DATE:${icsDate(ev.date)}`, `DTEND;VALUE=DATE:${icsDate(addDays(ev.date, 1))}`);
@@ -135,7 +135,7 @@ export function buildIcs(st = store.getState()) {
     if (!st.cats.some((c) => c.id === med.catId)) continue;
     if (med.end && med.end < todayKey()) continue;
     for (const time of med.times) {
-      const title = `💊 ${cat(med.catId)}: ${med.name}${med.dose ? ` (${med.dose})` : ''}`;
+      const title = `${cat(med.catId)}: ${med.name}${med.dose ? ` (${med.dose})` : ''}`;
       out.push('BEGIN:VEVENT', `UID:${med.id}-${time.replace(':', '')}@coyenick-tracker`, `DTSTAMP:${stamp}`,
         `SUMMARY:${icsText(title)}`, `DTSTART:${icsDateTime(med.start, time)}`, 'DURATION:PT15M',
         `RRULE:FREQ=DAILY${med.end ? `;UNTIL=${icsDate(med.end)}T235959` : `;UNTIL=${icsDate(addMonths(todayKey(), 6))}T235959`}`);

@@ -1,10 +1,10 @@
 // Offline support: serve from cache, refresh the cache in the background.
-const CACHE = 'coyenick-v1';
+const CACHE = 'coyenick-v2';
 const SHELL = [
   './', './index.html', './css/styles.css', './manifest.webmanifest',
   './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png',
   './js/app.js', './js/utils.js', './js/model.js', './js/store.js', './js/ui.js', './js/forms.js',
-  './js/charts.js', './js/notify.js',
+  './js/charts.js', './js/notify.js', './js/icons.js',
   './js/views/home.js', './js/views/calendar.js', './js/views/records.js', './js/views/cats.js',
   './js/views/report.js', './js/views/settings.js',
 ];

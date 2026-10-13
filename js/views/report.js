@@ -1,6 +1,7 @@
 // Printable monthly health report. "Save as PDF" uses the phone's print dialog.
-import { EVENT_TYPES, RECORD_TYPES, agenda, recordSummary, treatmentHistory, weightHistory } from '../model.js';
+import { RECORD_TYPES, agenda, recordSummary, treatmentHistory, weightHistory } from '../model.js';
 import { lineChart } from '../charts.js';
+import { icon } from '../icons.js';
 import { $, avatar, emptyState } from '../ui.js';
 import { addMonths, ageText, esc, fmtDate, fmtMonth, fmtTime, fmtWeight, fromKg, monthEnd, monthKey, todayKey } from '../utils.js';
 
@@ -8,7 +9,7 @@ export function renderReport(root, st, catId, month) {
   const cats = st.cats.filter((c) => !c.archived);
   const cat = cats.find((c) => c.id === catId) ?? cats[0];
   if (!cat) {
-    root.innerHTML = emptyState('📄', 'Nothing to report', 'Add a cat first.');
+    root.innerHTML = emptyState('report', 'Nothing to report', 'Add a cat first.');
     return;
   }
   const m = /^\d{4}-\d{2}$/.test(month || '') ? month : monthKey(todayKey());
@@ -27,7 +28,7 @@ export function renderReport(root, st, catId, month) {
 
   root.innerHTML = `
     <header class="page-head no-print">
-      <a class="icon-btn" href="#records" aria-label="Back">‹</a>
+      <a class="icon-btn" href="#records" aria-label="Back">${icon('back')}</a>
       <h1>Report</h1>
       <button class="btn btn-small btn-primary" data-print>Save PDF</button>
     </header>
@@ -35,9 +36,9 @@ export function renderReport(root, st, catId, month) {
       <div class="row-2">
         <select data-cat aria-label="Cat">${cats.map((c) => `<option value="${c.id}" ${c.id === cat.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select>
         <div class="month-nav">
-          <button class="icon-btn" data-m="-1" aria-label="Previous month">‹</button>
+          <button class="icon-btn" data-m="-1" aria-label="Previous month">${icon('back')}</button>
           <span>${fmtMonth(m)}</span>
-          <button class="icon-btn" data-m="1" aria-label="Next month">›</button>
+          <button class="icon-btn" data-m="1" aria-label="Next month">${icon('next')}</button>
         </div>
       </div>
     </div>
@@ -54,7 +55,7 @@ export function renderReport(root, st, catId, month) {
       </header>
 
       <h3>Summary</h3>
-      ${Object.keys(counts).length ? `<ul class="summary">${Object.entries(counts).map(([k, n]) => `<li>${RECORD_TYPES[k].icon} ${RECORD_TYPES[k].label}: <strong>${n}</strong>${k === 'asthma' ? ' episodes' : ' entries'}</li>`).join('')}</ul>` : '<p class="muted">No health records this month.</p>'}
+      ${Object.keys(counts).length ? `<ul class="summary">${Object.entries(counts).map(([k, n]) => `<li>${RECORD_TYPES[k].label}: <strong>${n}</strong>${k === 'asthma' ? ' episodes' : ' entries'}</li>`).join('')}</ul>` : '<p class="muted">No health records this month.</p>'}
 
       <h3>Weight</h3>
       ${lineChart(weights, { unit: ` ${units}`, label: 'Weight' })}
@@ -72,13 +73,13 @@ export function renderReport(root, st, catId, month) {
 
       <h3>Care & appointments</h3>
       ${events.length || treatments.length ? `<ul class="summary">
-        ${events.map((e) => `<li>${EVENT_TYPES[e.type].icon} ${fmtDate(e.date)} — ${esc(e.title)} ${e.done ? '✓' : e.status === 'overdue' ? '<span class="danger">(not done)</span>' : ''}</li>`).join('')}
-        ${treatments.filter((t) => !events.some((e) => e.ref.id === t.ev.id && e.date === t.scheduled)).map((t) => `<li>${EVENT_TYPES[t.ev.type].icon} ${fmtDate(t.given)} — ${esc(t.ev.title)} ✓</li>`).join('')}
+        ${events.map((e) => `<li>${fmtDate(e.date)} — ${esc(e.title)} ${e.done ? '(done)' : e.status === 'overdue' ? '<span class="danger">(not done)</span>' : ''}</li>`).join('')}
+        ${treatments.filter((t) => !events.some((e) => e.ref.id === t.ev.id && e.date === t.scheduled)).map((t) => `<li>${fmtDate(t.given)} — ${esc(t.ev.title)} (given)</li>`).join('')}
       </ul>` : '<p class="muted">Nothing scheduled this month.</p>'}
 
       <h3>All records</h3>
       ${recs.length ? `<table class="history"><thead><tr><th>Date</th><th>Record</th></tr></thead><tbody>
-        ${recs.map((r) => `<tr><td>${fmtDate(r.date, { day: 'numeric', month: 'short' })}</td><td>${RECORD_TYPES[r.category].icon} <strong>${RECORD_TYPES[r.category].label}</strong>: ${esc(recordSummary(r, units))}${r.notes ? `<br><span class="muted small">${esc(r.notes)}</span>` : ''}</td></tr>`).join('')}
+        ${recs.map((r) => `<tr><td>${fmtDate(r.date, { day: 'numeric', month: 'short' })}</td><td><strong>${RECORD_TYPES[r.category].label}</strong>: ${esc(recordSummary(r, units))}${r.notes ? `<br><span class="muted small">${esc(r.notes)}</span>` : ''}</td></tr>`).join('')}
       </tbody></table>` : '<p class="muted">No records.</p>'}
 
       ${cat.vet?.clinic || cat.vet?.name ? `<p class="muted small">Vet: ${esc([cat.vet.name, cat.vet.clinic, cat.vet.phone].filter(Boolean).join(', '))}</p>` : ''}

@@ -1,4 +1,5 @@
 // Shared UI building blocks: bottom sheets, toasts, avatars, photo input.
+import { icon } from './icons.js';
 import { esc } from './utils.js';
 import { StorageFullError } from './store.js';
 
@@ -15,13 +16,12 @@ export function openSheet(html, { onClose, wide = false } = {}) {
   const wrap = document.createElement('div');
   wrap.className = 'sheet-backdrop';
   wrap.innerHTML = `<div class="sheet${wide ? ' sheet-wide' : ''}" role="dialog" aria-modal="true">
-      <div class="sheet-grip" aria-hidden="true"></div>
       ${html}
     </div>`;
   document.body.appendChild(wrap);
   document.body.classList.add('no-scroll');
   document.getElementById('toast')?.classList.remove('show');
-  requestAnimationFrame(() => wrap.classList.add('open'));
+  wrap.classList.add('open');
   const sheet = wrap.firstElementChild;
 
   const api = {
@@ -29,8 +29,7 @@ export function openSheet(html, { onClose, wide = false } = {}) {
     close() {
       const i = sheetStack.indexOf(api);
       if (i >= 0) sheetStack.splice(i, 1);
-      wrap.classList.remove('open');
-      setTimeout(() => wrap.remove(), 200);
+      wrap.remove();
       if (!sheetStack.length) document.body.classList.remove('no-scroll');
       onClose?.();
     },
@@ -59,7 +58,7 @@ export const sheetHeader = (title, sub = '') => `
       <h2>${title}</h2>
       ${sub ? `<p class="muted">${sub}</p>` : ''}
     </div>
-    <button class="icon-btn" data-close aria-label="Close">✕</button>
+    <button class="icon-btn" data-close aria-label="Close">${icon('close')}</button>
   </header>`;
 
 export function confirmSheet(title, message, { okLabel = 'Delete', danger = true } = {}) {
@@ -85,10 +84,10 @@ export function confirmSheet(title, message, { okLabel = 'Delete', danger = true
 // Shown instead of a plain "Saved" when a symptom needs a vet.
 export function urgentSheet(warning, cat) {
   const vet = cat?.vet || {};
-  const call = vet.phone ? `<a class="btn btn-danger btn-block" href="tel:${esc(vet.phone)}">📞 Call ${esc(vet.name || vet.clinic || 'vet')}</a>` : '';
+  const call = vet.phone ? `<a class="btn btn-danger btn-block" href="tel:${esc(vet.phone)}">${icon('phone')} Call ${esc(vet.name || vet.clinic || 'vet')}</a>` : '';
   openSheet(`
     <div class="urgent urgent-${warning.level}">
-      <div class="urgent-icon" aria-hidden="true">${warning.level === 'emergency' ? '🚨' : '⚠️'}</div>
+      <div class="urgent-icon">${icon('alert')}</div>
       <h2>${esc(warning.title)}</h2>
       <p>${esc(warning.message)}</p>
       <p class="muted small">The entry has been saved to ${esc(cat?.name || 'your cat')}'s records. This app does not replace professional advice.</p>
@@ -219,7 +218,7 @@ export function photoField(name, value, label = 'Add photo') {
       <input type="hidden" name="${name}" value="${esc(value || '')}">
       <label class="photo-drop">
         <input type="file" accept="image/*" hidden>
-        <span class="photo-preview">${value ? `<img src="${value}" alt="">` : '<span aria-hidden="true">📷</span>'}</span>
+        <span class="photo-preview">${value ? `<img src="${value}" alt="">` : icon('camera')}</span>
         <span>${value ? 'Change photo' : label}</span>
       </label>
       ${value ? '<button type="button" class="link-btn" data-remove-photo>Remove</button>' : ''}
@@ -243,15 +242,15 @@ export function bindPhotoFields(root) {
     });
     $('[data-remove-photo]', f)?.addEventListener('click', (e) => {
       hidden.value = '';
-      preview.innerHTML = '<span aria-hidden="true">📷</span>';
+      preview.innerHTML = icon('camera');
       e.target.remove();
     });
   });
 }
 
-export const emptyState = (icon, title, text, action = '') => `
+export const emptyState = (iconName, title, text, action = '') => `
   <div class="empty">
-    <div class="empty-icon" aria-hidden="true">${icon}</div>
+    <div class="empty-icon">${icon(iconName)}</div>
     <h3>${title}</h3>
     <p class="muted">${text}</p>
     ${action}

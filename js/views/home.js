@@ -1,6 +1,7 @@
 import { EVENT_TYPES, currentWeight, dashboard } from '../model.js';
 import { bindItemActions, itemActions, openCatForm } from '../forms.js';
 import { loadSampleData } from '../store.js';
+import { icon } from '../icons.js';
 import { $, avatar, emptyState } from '../ui.js';
 import { ageText, esc, fmtLongDate, fmtTime, fmtWeight, relativeDay, todayKey } from '../utils.js';
 
@@ -12,7 +13,7 @@ export function agendaRow(item, st, { showDate = false } = {}) {
   const late = item.status === 'overdue' || item.status === 'due' || item.status === 'missed';
   return `<li class="item item-${type.color}${item.done ? ' is-done' : ''}${late ? ' is-late' : ''}">
     <button class="item-main" data-open-item="${esc(item.id)}">
-      <span class="item-icon" aria-hidden="true">${type.icon}</span>
+      <span class="item-icon">${icon(type.icon)}</span>
       <span class="item-text">
         <span class="item-title">${esc(item.title)}${cat ? ` <span class="item-cat">– ${esc(cat.name)}</span>` : ''}</span>
         ${sub ? `<span class="item-sub">${esc(sub)}</span>` : ''}
@@ -39,10 +40,10 @@ export function renderHome(root, st) {
   if (!cats.length) {
     root.innerHTML = `
       <header class="page-head">
-        <div><h1>My Cats 🐾</h1><p class="muted">${fmtLongDate(today)}</p></div>
-        <a class="icon-btn" href="#settings" aria-label="Settings">⚙️</a>
+        <div><h1>My Cats</h1><p class="muted">${fmtLongDate(today)}</p></div>
+        <a class="icon-btn" href="#settings" aria-label="Settings">${icon('settings')}</a>
       </header>
-      ${emptyState('🐱', 'Welcome!', 'Add your cat to start tracking care, medication and health — everything shows up here and in one calendar.',
+      ${emptyState('paw', 'Welcome', 'Add your cat to start tracking care, medication and health — everything shows up here and in one calendar.',
         `<button class="btn btn-primary btn-block" data-add-cat>+ Add my first cat</button>
          <button class="btn btn-ghost btn-block" data-sample>Try with sample cats</button>`)}`;
     $('[data-add-cat]', root).onclick = () => openCatForm();
@@ -55,8 +56,8 @@ export function renderHome(root, st) {
 
   root.innerHTML = `
     <header class="page-head">
-      <div><h1>My Cats 🐾</h1><p class="muted">${fmtLongDate(today)}</p></div>
-      <a class="icon-btn" href="#settings" aria-label="Settings">⚙️</a>
+      <div><h1>My Cats</h1><p class="muted">${fmtLongDate(today)}</p></div>
+      <a class="icon-btn" href="#settings" aria-label="Settings">${icon('settings')}</a>
     </header>
 
     <div class="stats">
@@ -74,21 +75,21 @@ export function renderHome(root, st) {
 
     ${overdue.length ? `
       <section class="card card-alert" aria-labelledby="h-overdue">
-        <h2 id="h-overdue">⏰ Needs attention</h2>
+        <h2 id="h-overdue">Needs attention</h2>
         <ul class="items">${overdue.map((i) => agendaRow(i, st, { showDate: true })).join('')}</ul>
       </section>` : ''}
 
     <section class="card" id="today" aria-labelledby="h-today">
       <h2 id="h-today">Today</h2>
       ${todays.length ? `<ul class="items">${todays.map((i) => agendaRow(i, st)).join('')}</ul>`
-        : '<p class="muted">Nothing scheduled today. Enjoy the cuddles! 😺</p>'}
+        : '<p class="muted">Nothing scheduled for today.</p>'}
     </section>
 
     ${upcoming.length ? `
       <section class="card" aria-labelledby="h-up">
         <h2 id="h-up">Coming up</h2>
         <ul class="items">${upcoming.slice(0, 5).map((i) => agendaRow(i, st, { showDate: true })).join('')}</ul>
-        ${upcoming.length > 5 ? `<a class="link-btn" href="#calendar">See all ${upcoming.length} in Calendar →</a>` : ''}
+        ${upcoming.length > 5 ? `<a class="link-btn" href="#calendar">See all ${upcoming.length} in Calendar</a>` : ''}
       </section>` : ''}
 
     <section aria-labelledby="h-cats">
@@ -100,11 +101,11 @@ export function renderHome(root, st) {
             <span class="cat-name">${esc(c.name)}</span>
             <span class="muted small">${[c.sex === 'male' ? 'Male' : c.sex === 'female' ? 'Female' : '', ageText(c.birthday), fmtWeight(currentWeight(st, c.id), st.settings.units)].filter(Boolean).join(' · ')}</span>
           </a>`).join('')}
-        <button class="cat-card cat-card-add" data-add-cat><span class="avatar avatar-lg avatar-add">+</span><span class="cat-name">Add cat</span></button>
+        <button class="cat-card cat-card-add" data-add-cat><span class="avatar avatar-lg avatar-add">${icon('plus')}</span><span class="cat-name">Add cat</span></button>
       </div>
     </section>`;
 
   $('[data-add-cat]', root).onclick = () => openCatForm();
-  $('[data-scroll]', root).onclick = () => $('#today', root).scrollIntoView({ behavior: 'smooth' });
+  $('[data-scroll]', root).onclick = () => $('#today', root).scrollIntoView();
   bindItemActions(root, [...overdue, ...todays, ...upcoming]);
 }

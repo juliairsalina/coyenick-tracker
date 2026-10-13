@@ -1,6 +1,7 @@
 import { EVENT_TYPES, agenda } from '../model.js';
 import { bindItemActions, openEventForm } from '../forms.js';
 import { buildIcs, download } from '../notify.js';
+import { icon } from '../icons.js';
 import { $, $$, avatar } from '../ui.js';
 import { addDays, addMonths, esc, fmtLongDate, fmtMonth, monthStart, parseKey, todayKey } from '../utils.js';
 import { agendaRow } from './home.js';
@@ -46,7 +47,7 @@ export function renderCalendar(container, st) {
   root.innerHTML = `
     <header class="page-head">
       <h1>Calendar</h1>
-      <button class="icon-btn" data-export aria-label="Export to phone calendar" title="Export to phone calendar">📤</button>
+      <button class="icon-btn" data-export aria-label="Export to phone calendar" title="Export to phone calendar">${icon('share')}</button>
     </header>
 
     ${cats.length > 1 ? `<div class="filter-row" role="radiogroup" aria-label="Filter by cat">
@@ -56,9 +57,9 @@ export function renderCalendar(container, st) {
 
     <section class="card cal">
       <div class="cal-head">
-        <button class="icon-btn" data-nav="-1" aria-label="Previous month">‹</button>
+        <button class="icon-btn" data-nav="-1" aria-label="Previous month">${icon('back')}</button>
         <h2>${fmtMonth(view.month)}</h2>
-        <button class="icon-btn" data-nav="1" aria-label="Next month">›</button>
+        <button class="icon-btn" data-nav="1" aria-label="Next month">${icon('next')}</button>
       </div>
       <div class="weekdays" aria-hidden="true">${['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d) => `<span>${d}</span>`).join('')}</div>
       <div class="grid">${cells.join('')}</div>

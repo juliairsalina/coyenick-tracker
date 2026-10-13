@@ -8,6 +8,7 @@ import {
   $, $$, bindChips, bindPhotoFields, catPicker, chipValue, chips, confirmSheet, openSheet,
   photoField, safely, sheetHeader, toast, urgentSheet,
 } from './ui.js';
+import { icon as svg } from './icons.js';
 import { addDays, esc, fmtDate, fmtTime, fromKg, todayKey, toKg } from './utils.js';
 
 const activeCats = () => store.getState().cats.filter((c) => !c.archived);
@@ -54,11 +55,11 @@ const QUICK = {
     ['stool'], ['eyes'], ['asthma'], ['appetite'], ['urination'], ['symptoms'],
   ],
   care: [
-    ['med', '💊', 'Medication'], ['vaccine', '💉', 'Vaccine'], ['flea', '🪲', 'Flea', 'kutu'],
-    ['deworm', '🪱', 'Deworm', 'cacing'], ['vet', '🏥', 'Vet appt.'], ['medical'],
+    ['med', 'med', 'Medication'], ['vaccine', 'vaccine', 'Vaccine'], ['flea', 'flea', 'Flea', 'kutu'],
+    ['deworm', 'deworm', 'Deworm', 'cacing'], ['vet', 'vet', 'Vet appt.'], ['medical'],
   ],
   daily: [
-    ['weight'], ['food'], ['task', '✅', 'To-do'], ['custom', '⭐', 'Event'], ['cat', '🐱', 'New cat'],
+    ['weight'], ['food'], ['task', 'task', 'To-do'], ['custom', 'custom', 'Event'], ['cat', 'paw', 'New cat'],
   ],
 };
 
@@ -67,7 +68,7 @@ export function openQuickAdd({ catId, tab = 'health' } = {}) {
   const tile = ([key, icon, label, hint]) => {
     const def = RECORD_TYPES[key];
     return `<button class="tile" data-add="${key}">
-      <span class="tile-icon" aria-hidden="true">${icon || def.icon}</span>
+      <span class="tile-icon">${svg(icon || def.icon)}</span>
       <span class="tile-label">${label || def.short || def.label}</span>
       ${(hint || def?.hint) ? `<span class="tile-hint">${hint || def.hint}</span>` : ''}
     </button>`;
@@ -137,7 +138,7 @@ export function openRecordForm({ catId, category, record } = {}) {
   const hasExtras = rec.notes || (rec.photo && !def.fields.some((f) => f.key === 'photo'));
 
   const s = openSheet(`
-    ${sheetHeader(`${def.icon} ${def.label}${def.hint ? ` <span class="muted">(${def.hint})</span>` : ''}`)}
+    ${sheetHeader(`${def.label}${def.hint ? ` <span class="muted">(${def.hint})</span>` : ''}`)}
     <form class="form" novalidate>
       ${activeCats().length > 1 || record ? group('Cat', catPicker(activeCats(), selectedCat)) : ''}
       <div data-fields>${def.fields.map((f) => renderField(f, rec, selectedCat)).join('')}</div>
@@ -221,7 +222,7 @@ export function openEventForm({ catId, type = 'task', date, event } = {}) {
     type, date: date || todayKey(), repeat: DEFAULT_REPEAT[type] || 'none', reminders: [...st.settings.defaultReminders],
   };
   let selectedCat = defaultCatId(event?.catId || catId);
-  const typeOptions = Object.fromEntries(EVENT_FORM_TYPES.map((t) => [t, `${EVENT_TYPES[t].icon} ${EVENT_TYPES[t].short || EVENT_TYPES[t].label}`]));
+  const typeOptions = Object.fromEntries(EVENT_FORM_TYPES.map((t) => [t, EVENT_TYPES[t].short || EVENT_TYPES[t].label]));
 
   const s = openSheet(`
     ${sheetHeader(event ? 'Edit event' : 'Schedule')}
@@ -295,7 +296,7 @@ export function openCompleteSheet(item) {
   }
   const today = todayKey();
   const s = openSheet(`
-    ${sheetHeader(`${EVENT_TYPES[ev.type].icon} ${esc(ev.title)}`, `Scheduled ${fmtDate(item.date)}`)}
+    ${sheetHeader(esc(ev.title), `Scheduled ${fmtDate(item.date)}`)}
     <form class="form">
       ${field('Date given', `<input type="date" name="givenDate" value="${item.date < today ? item.date : today}" max="${today}">`)}
       ${field('Notes (optional)', '<input type="text" name="notes" placeholder="e.g. batch no., given by Dr. Lim">')}
@@ -342,7 +343,7 @@ export function itemActions(item) {
   if (item.kind === 'dose') {
     const key = doseKey(item.ref.id, item.date, item.time);
     if (item.status === 'taken' || item.status === 'skipped') {
-      return `<button class="pill pill-${item.status}" data-dose-undo="${esc(key)}">${item.status === 'taken' ? '✓ Taken' : 'Skipped'}</button>`;
+      return `<button class="pill pill-${item.status}" data-dose-undo="${esc(key)}">${item.status === 'taken' ? 'Taken' : 'Skipped'}</button>`;
     }
     return `<div class="action-pair">
       <button class="btn btn-small btn-ghost" data-dose="${esc(key)}" data-status="skipped">Skip</button>
@@ -351,10 +352,10 @@ export function itemActions(item) {
   }
   if (item.kind === 'weighin') {
     return item.done
-      ? '<span class="pill pill-taken">✓ Done</span>'
+      ? '<span class="pill pill-taken">Done</span>'
       : `<button class="btn btn-small btn-primary" data-weigh="${item.catId}">Log</button>`;
   }
-  if (item.done) return `<button class="pill pill-taken" data-undo="${esc(item.id)}">✓ Done</button>`;
+  if (item.done) return `<button class="pill pill-taken" data-undo="${esc(item.id)}">Done</button>`;
   return `<div class="action-pair">
     <button class="btn btn-small btn-ghost" data-move="${esc(item.id)}" aria-label="Reschedule">Later</button>
     <button class="btn btn-small btn-primary" data-done="${esc(item.id)}">Done</button>
@@ -411,11 +412,11 @@ export function openMedForm({ catId, med } = {}) {
   const timesHtml = () => times.map((t, i) => `
     <div class="time-row">
       <input type="time" value="${t}" data-time="${i}" aria-label="Dose time ${i + 1}">
-      ${times.length > 1 ? `<button type="button" class="icon-btn" data-remove-time="${i}" aria-label="Remove time">✕</button>` : ''}
+      ${times.length > 1 ? `<button type="button" class="icon-btn" data-remove-time="${i}" aria-label="Remove time">${svg('close')}</button>` : ''}
     </div>`).join('');
 
   const s = openSheet(`
-    ${sheetHeader(med ? 'Edit medication' : '💊 Add medication')}
+    ${sheetHeader(med ? 'Edit medication' : 'Add medication')}
     <form class="form" novalidate>
       ${group('Cat', catPicker(activeCats(), selectedCat))}
       ${field('Medication name', `<input type="text" name="name" value="${esc(m.name || '')}" placeholder="e.g. Prednisolone" required autocomplete="off">`)}
@@ -503,7 +504,7 @@ export function openCatForm({ cat, onSaved } = {}) {
   const c = cat ? structuredClone(cat) : { sex: '', neutered: false, color: CAT_COLORS[activeCats().length % CAT_COLORS.length], vet: {} };
   const st = store.getState();
   const s = openSheet(`
-    ${sheetHeader(cat ? `Edit ${esc(cat.name)}` : '🐱 Add a cat')}
+    ${sheetHeader(cat ? `Edit ${esc(cat.name)}` : 'Add a cat')}
     <form class="form" novalidate>
       ${group('Profile photo', photoField('photo', c.photo))}
       ${field('Name', `<input type="text" name="name" value="${esc(c.name || '')}" required autocomplete="off" placeholder="e.g. Milo">`)}
@@ -511,7 +512,7 @@ export function openCatForm({ cat, onSaved } = {}) {
         ${field('Birthday', `<input type="date" name="birthday" value="${c.birthday || ''}" max="${todayKey()}">`, 'A guess is fine')}
         ${field('Breed', `<input type="text" name="breed" value="${esc(c.breed || '')}" placeholder="e.g. Domestic shorthair">`)}
       </div>
-      ${group('Sex', chips('sex', { male: '♂ Male', female: '♀ Female' }, c.sex))}
+      ${group('Sex', chips('sex', { male: 'Male', female: 'Female' }, c.sex))}
       <label class="switch"><input type="checkbox" name="neutered" ${c.neutered ? 'checked' : ''}><span>Neutered / spayed</span></label>
       ${cat ? '' : field(`Current weight (${st.settings.units}, optional)`, '<input type="number" name="weight" step="0.1" min="0" inputmode="decimal" placeholder="0.0">')}
       ${field('Allergies', `<input type="text" name="allergies" value="${esc(c.allergies || '')}" placeholder="e.g. chicken, penicillin">`)}
@@ -570,7 +571,7 @@ export function openCatForm({ cat, onSaved } = {}) {
       safely(() => store.saveRecord({ catId: id, category: 'weight', date: todayKey(), weight: Math.round(toKg(w, st.settings.units) * 100) / 100 }));
     }
     s.close();
-    toast(cat ? 'Profile updated' : `${out.name} added 🐾`);
+    toast(cat ? 'Profile updated' : `${out.name} added`);
     onSaved?.(id);
   });
 }

@@ -1,6 +1,6 @@
-# coyenick-tracker — My Cats 🐾
+# coyenick-tracker — My Cats
 
-A simple, mobile-friendly cat care app for the whole family. It has four tabs, one **+ Add Record** button and one calendar that shows everything.
+A simple, mobile-friendly cat care app for the whole family. It has four tabs, an **Add** button in the middle of the bottom bar, and one calendar that shows everything. The design is deliberately plain: line icons, one accent colour and no animation.
 
 It is an installable web app (PWA). It has no build step and no dependencies, works offline, and stores data on the phone.
 
@@ -22,7 +22,7 @@ To use it on a phone, host the folder on any static host (GitHub Pages, Netlify,
 | **Records** | Searchable history filtered by cat, category and date. A **Trends** tab shows weight over time, asthma episodes per month, appetite problems and other symptoms. Includes a monthly **Report** you can save as PDF. |
 | **Cats** | A profile per cat: photo, birthday (age is calculated), sex, breed, neutered/spayed, allergies, conditions and vet info. Also current weight with history, current and past medication, vaccine/flea/deworm history, the monthly photo gallery with side-by-side **Compare**, and recent records. |
 
-**Quick Add** (the + button) is grouped into **Health / Care / Daily**. Pick a category, tap a cat, tap a status, and save. The date is filled in for you. The last cat used, last weight, last food brand and last clinic are pre-filled too. Notes and photos are optional.
+**Quick Add** (the Add button) is grouped into **Health / Care / Daily**. Pick a category, tap a cat, tap a status, and save. The date is filled in for you. The last cat used, last weight, last food brand and last clinic are pre-filled too. Notes and photos are optional.
 
 **Safety prompts.** Some entries open a "contact a vet" screen instead of only being logged:
 

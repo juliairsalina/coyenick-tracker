@@ -1,6 +1,7 @@
 import { RECORD_TYPES, isAbnormal, monthlySeries, recordSummary, weightHistory } from '../model.js';
 import { barChart, lineChart } from '../charts.js';
 import { openQuickAdd, openRecordForm } from '../forms.js';
+import { icon } from '../icons.js';
 import { $, $$, avatar, emptyState } from '../ui.js';
 import { addDays, esc, fmtDate, fromKg, monthKey, relativeDay, todayKey } from '../utils.js';
 
@@ -28,7 +29,7 @@ export function recordRow(r, st, { showCat = true } = {}) {
   const cat = st.cats.find((c) => c.id === r.catId);
   return `<li class="item${isAbnormal(r) ? ' is-flag' : ''}">
     <button class="item-main" data-record="${r.id}">
-      <span class="item-icon" aria-hidden="true">${def?.icon ?? '📝'}</span>
+      <span class="item-icon">${icon(def?.icon ?? 'report')}</span>
       <span class="item-text">
         <span class="item-title">${esc(def?.short || def?.label || r.category)}${showCat && cat ? ` <span class="item-cat">– ${esc(cat.name)}</span>` : ''}</span>
         <span class="item-sub">${esc(recordSummary(r, st.settings.units))}</span>
@@ -70,7 +71,7 @@ export function renderRecords(container, st) {
   root.innerHTML = `
     <header class="page-head">
       <h1>Records</h1>
-      <a class="btn btn-small btn-ghost" href="#report/${trendCat ?? ''}/${monthKey(todayKey())}">📄 Report</a>
+      <a class="btn btn-small btn-ghost" href="#report/${trendCat ?? ''}/${monthKey(todayKey())}">${icon('report')} Report</a>
     </header>
 
     ${cats.length > 1 ? `<div class="filter-row" role="radiogroup" aria-label="Filter by cat">
@@ -92,7 +93,7 @@ export function renderRecords(container, st) {
         <div class="row-2">
           <select data-category aria-label="Category">
             <option value="">All categories</option>
-            ${Object.entries(RECORD_TYPES).map(([k, d]) => `<option value="${k}" ${view.category === k ? 'selected' : ''}>${d.icon} ${d.label}</option>`).join('')}
+            ${Object.entries(RECORD_TYPES).map(([k, d]) => `<option value="${k}" ${view.category === k ? 'selected' : ''}>${d.label}</option>`).join('')}
           </select>
           <select data-range aria-label="Date range">
             ${Object.entries(RANGES).map(([k, l]) => `<option value="${k}" ${view.range === k ? 'selected' : ''}>${l}</option>`).join('')}
@@ -104,7 +105,7 @@ export function renderRecords(container, st) {
           <h3 class="day-label">${relativeDay(date)}${relativeDay(date) !== fmtDate(date) ? ` · <span class="muted">${fmtDate(date)}</span>` : ''}</h3>
           <ul class="items card">${recs.map((r) => recordRow(r, st, { showCat: !view.catId && cats.length > 1 })).join('')}</ul>
         </section>`).join('')
-        : emptyState('📋', st.records.length ? 'No matching records' : 'No records yet', st.records.length ? 'Try another filter or search.' : 'Tap + to log stool, eyes, asthma, weight and more. It only takes a tap or two.',
+        : emptyState('records', st.records.length ? 'No matching records' : 'No records yet', st.records.length ? 'Try another filter or search.' : 'Tap + to log stool, eyes, asthma, weight and more. It only takes a tap or two.',
           st.records.length ? '' : '<button class="btn btn-primary" data-quick>+ Add record</button>')}
     `}`;
 

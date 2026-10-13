@@ -2,6 +2,7 @@ import { REMINDER_OPTIONS } from '../model.js';
 import { buildIcs, download, emailDigestUrl, enableNotifications, notificationsSupported } from '../notify.js';
 import * as store from '../store.js';
 import { $, bindChips, chips, confirmSheet, safely, toast } from '../ui.js';
+import { icon } from '../icons.js';
 import { esc, todayKey } from '../utils.js';
 
 export function renderSettings(root, st) {
@@ -9,7 +10,7 @@ export function renderSettings(root, st) {
   const perm = notificationsSupported() ? Notification.permission : 'unsupported';
   root.innerHTML = `
     <header class="page-head">
-      <a class="icon-btn" href="#home" aria-label="Back">‹</a>
+      <a class="icon-btn" href="#home" aria-label="Back">${icon('back')}</a>
       <h1>Settings</h1>
       <span></span>
     </header>
@@ -18,7 +19,7 @@ export function renderSettings(root, st) {
       <h2>Reminders</h2>
       <label class="field"><span class="field-label">Your email</span>
         <input type="email" data-email value="${esc(s.email)}" placeholder="you@example.com" autocomplete="email"></label>
-      <button class="btn btn-ghost btn-block" data-digest>✉️ Email me the next 2 weeks</button>
+      <button class="btn btn-ghost btn-block" data-digest>${icon('mail')} Email me the next 2 weeks</button>
       <p class="field-hint">Opens your mail app with every upcoming vaccine, treatment, appointment and medication filled in.</p>
 
       <hr>
@@ -32,7 +33,7 @@ export function renderSettings(root, st) {
       <label class="switch"><input type="checkbox" data-weighin ${s.monthlyWeighIn ? 'checked' : ''}><span>Monthly weight & photo reminder</span></label>
 
       <hr>
-      <button class="btn btn-ghost btn-block" data-ics>📅 Add all reminders to my phone calendar</button>
+      <button class="btn btn-ghost btn-block" data-ics>${icon('calendar')} Add all reminders to my phone calendar</button>
       <p class="field-hint">Downloads a calendar file. Open it to import into Google Calendar, Apple Calendar or Outlook — they will remind you (and can email you) even when this app is closed.</p>
     </section>
 
@@ -45,8 +46,8 @@ export function renderSettings(root, st) {
       <h2>Backup & family sharing</h2>
       <p class="muted small">Your data is stored on this phone only. Export a backup regularly, or send it to a family member so they can import it on their phone.</p>
       <div class="btn-row">
-        <button class="btn btn-ghost btn-grow" data-export>⬇️ Export backup</button>
-        <label class="btn btn-ghost btn-grow">⬆️ Import<input type="file" accept="application/json,.json" data-import hidden></label>
+        <button class="btn btn-ghost btn-grow" data-export>${icon('download')} Export backup</button>
+        <label class="btn btn-ghost btn-grow">${icon('upload')} Import<input type="file" accept="application/json,.json" data-import hidden></label>
       </div>
     </section>
 
