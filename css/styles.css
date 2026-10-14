@@ -139,16 +139,6 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 16px 0; }
 .card-alert > h2 { color: var(--danger); }
 .card-warn { background: var(--warn-soft); border-color: var(--warn-line); }
 
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.stat {
-  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; text-align: left;
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin: 0;
-  text-decoration: none;
-}
-.stat-label { font-size: .85rem; color: var(--muted); font-weight: 500; }
-.stat-value { font-size: 1.75rem; font-weight: 600; line-height: 1.15; margin: 2px 0; }
-.stat-value small { font-size: .95rem; font-weight: 500; color: var(--muted); }
-.stat-sub { font-size: .82rem; color: var(--muted); }
 
 /* ---------- Agenda / record items ---------- */
 .items { list-style: none; margin: 0; padding: 0; }
@@ -267,13 +257,9 @@ table.history { width: 100%; border-collapse: collapse; font-size: .9rem; }
 .day.selected .day-num { background: var(--brand); color: var(--brand-ink); box-shadow: none; }
 .day-num { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; font-size: .92rem; }
 .dots { display: flex; gap: 3px; min-height: 6px; }
-.dots i, .legend i { display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
+.dots i { display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
 .dots i.faded { opacity: .35; }
 .day-more { position: absolute; top: 2px; right: 3px; font-size: .62rem; color: var(--muted); }
-.legend { font-size: .88rem; }
-.legend summary { color: var(--muted); cursor: pointer; }
-.legend ul { list-style: none; padding: 8px 0 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.legend i { width: 9px; height: 9px; margin-right: 8px; }
 .dot-vaccine { background: var(--c-vaccine); }
 .dot-flea { background: var(--c-flea); }
 .dot-deworm { background: var(--c-deworm); }
@@ -324,9 +310,6 @@ details > .field + .field { margin-top: 12px; }
 .stepper .icon-btn { width: 48px; height: 48px; font-size: 1.3rem; }
 .times { display: grid; gap: 8px; margin-top: 10px; }
 .time-row { display: flex; gap: 8px; align-items: center; }
-.swatches { display: flex; gap: 10px; flex-wrap: wrap; }
-.swatch { width: 34px; height: 34px; border-radius: 50%; background: var(--sw); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--line); }
-.swatch.on { box-shadow: 0 0 0 2px var(--text); }
 .photo-field { display: flex; align-items: center; gap: 12px; }
 .photo-drop { display: flex; align-items: center; gap: 12px; cursor: pointer; color: var(--brand); font-weight: 500; }
 .photo-preview { display: grid; place-items: center; width: 64px; height: 64px; border-radius: var(--radius-sm); background: var(--surface-2); border: 1px dashed var(--line); color: var(--muted); overflow: hidden; }

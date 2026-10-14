@@ -59,7 +59,7 @@ const QUICK = {
     ['deworm', 'deworm', 'Deworm', 'cacing'], ['vet', 'vet', 'Vet appt.'], ['medical'],
   ],
   daily: [
-    ['weight'], ['food'], ['task', 'task', 'To-do'], ['custom', 'custom', 'Event'], ['cat', 'paw', 'New cat'],
+    ['weight'], ['food'], ['task', 'task', 'To-do'], ['custom', 'custom', 'Event'],
   ],
 };
 
@@ -74,7 +74,7 @@ export function openQuickAdd({ catId, tab = 'health' } = {}) {
     </button>`;
   };
   const s = openSheet(`
-    ${sheetHeader('Quick Add', 'What do you want to record?')}
+    ${sheetHeader('Add')}
     <div class="segmented" role="tablist">
       ${['health', 'care', 'daily'].map((t) => `<button role="tab" data-tab="${t}" aria-selected="${t === tab}">${t[0].toUpperCase() + t.slice(1)}</button>`).join('')}
     </div>
@@ -88,7 +88,6 @@ export function openQuickAdd({ catId, tab = 'health' } = {}) {
     const key = b.dataset.add;
     s.close();
     if (key === 'med') openMedForm({ catId });
-    else if (key === 'cat') openCatForm();
     else if (RECORD_TYPES[key]) openRecordForm({ catId, category: key });
     else openEventForm({ catId, type: key });
   }));
@@ -523,7 +522,6 @@ export function openCatForm({ cat, onSaved } = {}) {
         ${field('Clinic', `<input type="text" name="vetClinic" value="${esc(c.vet?.clinic || '')}">`)}
         ${field('Phone', `<input type="tel" name="vetPhone" value="${esc(c.vet?.phone || '')}">`)}
       </details>
-      ${group('Colour (when there is no photo)', `<div class="swatches">${CAT_COLORS.map((col) => `<button type="button" class="swatch${col === c.color ? ' on' : ''}" data-color="${col}" style="--sw:${col}" aria-label="Colour ${col}"></button>`).join('')}</div>`)}
       <div class="btn-row sticky-actions">
         ${cat ? '<button type="button" class="btn btn-ghost" data-delete>Delete</button>' : ''}
         <button class="btn btn-primary btn-grow" type="submit">Save</button>
@@ -533,11 +531,6 @@ export function openCatForm({ cat, onSaved } = {}) {
   const form = $('form', s.el);
   bindChips(form);
   bindPhotoFields(form);
-  let color = c.color;
-  $$('[data-color]', form).forEach((b) => b.addEventListener('click', () => {
-    color = b.dataset.color;
-    $$('[data-color]', form).forEach((x) => x.classList.toggle('on', x === b));
-  }));
   $('[data-delete]', form)?.addEventListener('click', async () => {
     if (!(await confirmSheet(`Delete ${cat.name}?`, 'All records, medications and calendar events for this cat will be permanently removed.'))) return;
     if (safely(() => store.deleteCat(cat.id))) {
@@ -561,7 +554,6 @@ export function openCatForm({ cat, onSaved } = {}) {
       neutered: d.neutered,
       allergies: d.allergies,
       conditions: d.conditions,
-      color,
       vet: { name: d.vetName, clinic: d.vetClinic, phone: d.vetPhone },
     };
     let id;

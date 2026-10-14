@@ -18,7 +18,7 @@ To use it on a phone, host the folder on any static host (GitHub Pages, Netlify,
 | Tab | What it does |
 | --- | --- |
 | **Home** | Today's tasks and medication doses, overdue items, the next 14 days, your cats. Tap **Done / Taken / Skip / Later** right in the list. |
-| **Calendar** | One colour-coded month view: vaccines, flea (kutu), deworming (cacing), medication, vet visits, to-dos, monthly weigh-ins and custom events. Filter by cat. Export to your phone calendar. |
+| **Calendar** | One colour-coded month view: vaccines, flea (kutu), deworming (cacing), medication, vet visits, to-dos, monthly weigh-ins and custom events. Filter by cat. (Export to your phone calendar is in Settings.) |
 | **Records** | Searchable history filtered by cat, category and date. A **Trends** tab shows weight over time, asthma episodes per month, appetite problems and other symptoms. Includes a monthly **Report** you can save as PDF. |
 | **Cats** | A profile per cat: photo, birthday (age is calculated), sex, breed, neutered/spayed, allergies, conditions and vet info. Also current weight with history, current and past medication, vaccine/flea/deworm history, the monthly photo gallery with side-by-side **Compare**, and recent records. |
 

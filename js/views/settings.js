@@ -54,7 +54,6 @@ export function renderSettings(root, st) {
     <section class="card">
       <h2>Data</h2>
       <div class="btn-row wrap">
-        <button class="btn btn-ghost" data-sample>Load sample cats</button>
         <button class="btn btn-danger" data-reset>Erase everything</button>
       </div>
     </section>
@@ -97,13 +96,6 @@ export function renderSettings(root, st) {
       toast('That file is not a valid backup');
     } finally {
       e.target.value = '';
-    }
-  });
-  $('[data-sample]', root).addEventListener('click', async () => {
-    if (st.cats.length && !(await confirmSheet('Load sample data?', 'This replaces your current cats and records with the samples.', { okLabel: 'Replace' }))) return;
-    if (safely(() => store.loadSampleData())) {
-      toast('Sample cats loaded');
-      location.hash = '#home';
     }
   });
   $('[data-reset]', root).addEventListener('click', async () => {

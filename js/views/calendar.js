@@ -1,6 +1,5 @@
 import { EVENT_TYPES, agenda } from '../model.js';
 import { bindItemActions, openEventForm } from '../forms.js';
-import { buildIcs, download } from '../notify.js';
 import { icon } from '../icons.js';
 import { $, $$, avatar } from '../ui.js';
 import { addDays, addMonths, esc, fmtLongDate, fmtMonth, monthStart, parseKey, todayKey } from '../utils.js';
@@ -8,8 +7,6 @@ import { agendaRow } from './home.js';
 
 // View state survives re-renders (e.g. after marking something done).
 const view = { month: null, selected: null, catId: null };
-
-const LEGEND = ['vaccine', 'flea', 'deworm', 'med', 'vet', 'task', 'weight', 'custom'];
 
 export function renderCalendar(container, st) {
   // Fresh element per render so delegated listeners never stack up.
@@ -47,7 +44,6 @@ export function renderCalendar(container, st) {
   root.innerHTML = `
     <header class="page-head">
       <h1>Calendar</h1>
-      <button class="icon-btn" data-export aria-label="Export to phone calendar" title="Export to phone calendar">${icon('share')}</button>
     </header>
 
     ${cats.length > 1 ? `<div class="filter-row" role="radiogroup" aria-label="Filter by cat">
@@ -65,11 +61,6 @@ export function renderCalendar(container, st) {
       <div class="grid">${cells.join('')}</div>
       ${view.month !== monthStart(today) ? '<button class="link-btn center" data-today>Back to today</button>' : ''}
     </section>
-
-    <details class="legend">
-      <summary>Colour key</summary>
-      <ul>${LEGEND.map((t) => `<li><i class="dot-${EVENT_TYPES[t].color}"></i>${EVENT_TYPES[t].label}</li>`).join('')}</ul>
-    </details>
 
     <section class="card">
       <div class="section-head">
@@ -101,9 +92,6 @@ export function renderCalendar(container, st) {
   }));
   $('[data-add-event]', root).addEventListener('click', () => {
     openEventForm({ catId: view.catId, date: view.selected, type: 'task' });
-  });
-  $('[data-export]', root).addEventListener('click', () => {
-    download('cat-care.ics', buildIcs(st), 'text/calendar');
   });
   bindItemActions(root, dayItems);
 }

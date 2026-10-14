@@ -1,6 +1,6 @@
 // Reminders: in-app browser notifications, an email digest, and a calendar
 // (.ics) export whose alarms work even when the app is closed.
-import { EVENT_TYPES, agenda, remindersDue } from './model.js';
+import { agenda, remindersDue } from './model.js';
 import * as store from './store.js';
 import { addDays, addMonths, fmtDate, fmtTime, nowTime, todayKey } from './utils.js';
 

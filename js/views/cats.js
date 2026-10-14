@@ -5,7 +5,7 @@ import { $, $$, avatar, confirmSheet, emptyState, openSheet, readPhoto, safely, 
 import { addDays, ageText, esc, fmtDate, fmtMonth, fmtTime, fmtWeight, monthKey, todayKey } from '../utils.js';
 import { icon } from '../icons.js';
 import { agendaRow } from './home.js';
-import { bindRecordRows, recordRow, trendsHtml } from './records.js';
+import { bindRecordRows, recordRow } from './records.js';
 
 const sexLabel = (s) => (s === 'male' ? 'Male' : s === 'female' ? 'Female' : '');
 
@@ -143,11 +143,6 @@ export function renderCatProfile(root, st, catId) {
     </section>
 
     <section class="card">
-      <h2>Trends</h2>
-      <div class="charts">${trendsHtml(st, cat.id)}</div>
-    </section>
-
-    <section class="card">
       <div class="section-head"><h2>Recent records</h2><a class="link-btn" href="#report/${cat.id}/${monthKey(today)}">Report</a></div>
       ${recent.length ? `<ul class="items">${recent.map((r) => recordRow(r, st, { showCat: false })).join('')}</ul>` : '<p class="muted">No records yet.</p>'}
     </section>
@@ -160,14 +155,7 @@ export function renderCatProfile(root, st, catId) {
           ${info('Clinic', esc(cat.vet.clinic))}
           ${info('Phone', cat.vet.phone ? `<a href="tel:${esc(cat.vet.phone)}">${esc(cat.vet.phone)}</a>` : '')}
         </dl>
-      </section>` : ''}
-
-    <section class="card">
-      <dl>
-        ${info('Birthday', cat.birthday ? fmtDate(cat.birthday, { day: 'numeric', month: 'long', year: 'numeric' }) : '')}
-        ${info('Breed', esc(cat.breed))}
-      </dl>
-    </section>`;
+      </section>` : ''}`;
 
   $('[data-edit]', root).onclick = () => openCatForm({ cat });
   $('[data-avatar-file]', root).onchange = async (e) => {
