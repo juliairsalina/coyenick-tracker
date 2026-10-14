@@ -199,6 +199,13 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 16px 0; }
 .avatar-md { width: 40px; height: 40px; }
 .avatar-lg { width: 56px; height: 56px; font-size: 1.35rem; }
 .avatar-xl { width: 96px; height: 96px; font-size: 2.4rem; }
+.avatar-edit { position: relative; display: inline-block; cursor: pointer; }
+.avatar-badge {
+  position: absolute; right: 0; bottom: 0; display: grid; place-items: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--brand); color: var(--brand-ink); border: 2px solid var(--bg);
+}
+.avatar-badge .ic { width: 16px; height: 16px; }
 .avatar-add { background: var(--surface-2); color: var(--muted); border: 1px dashed var(--line); }
 
 .cat-scroller { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }

@@ -192,7 +192,8 @@ export function catPicker(cats, selectedId, name = 'catId') {
 // Photos: resize on the phone before saving so storage stays small.
 // ---------------------------------------------------------------------------
 
-export function readPhoto(file, max = 720, quality = 0.78) {
+// `square` centre-crops (used for profile pictures).
+export function readPhoto(file, max = 720, quality = 0.78, square = false) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = reject;
@@ -200,11 +201,15 @@ export function readPhoto(file, max = 720, quality = 0.78) {
       const img = new Image();
       img.onerror = reject;
       img.onload = () => {
-        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const side = Math.min(img.width, img.height);
+        const [sx, sy, sw, sh] = square
+          ? [(img.width - side) / 2, (img.height - side) / 2, side, side]
+          : [0, 0, img.width, img.height];
+        const scale = Math.min(1, max / Math.max(sw, sh));
         const canvas = document.createElement('canvas');
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
-        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.width = Math.round(sw * scale);
+        canvas.height = Math.round(sh * scale);
+        canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
         resolve(canvas.toDataURL('image/jpeg', quality));
       };
       img.src = reader.result;
@@ -213,8 +218,8 @@ export function readPhoto(file, max = 720, quality = 0.78) {
   });
 }
 
-export function photoField(name, value, label = 'Add photo') {
-  return `<div class="photo-field" data-photo="${name}">
+export function photoField(name, value, label = 'Add photo', { square = false } = {}) {
+  return `<div class="photo-field" data-photo="${name}"${square ? ' data-square' : ''}>
       <input type="hidden" name="${name}" value="${esc(value || '')}">
       <label class="photo-drop">
         <input type="file" accept="image/*" hidden>
@@ -233,7 +238,7 @@ export function bindPhotoFields(root) {
       const file = e.target.files?.[0];
       if (!file) return;
       try {
-        hidden.value = await readPhoto(file);
+        hidden.value = f.hasAttribute('data-square') ? await readPhoto(file, 512, 0.8, true) : await readPhoto(file);
         preview.innerHTML = `<img src="${hidden.value}" alt="">`;
         preview.nextElementSibling.textContent = 'Change photo';
       } catch {

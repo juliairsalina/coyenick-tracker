@@ -1,7 +1,7 @@
 import { EVENT_TYPES, agenda, currentWeight, eventDates, treatmentHistory, weightHistory } from '../model.js';
 import { bindItemActions, openCatForm, openEventForm, openMedForm, openQuickAdd, openRecordForm } from '../forms.js';
-import { stopMed } from '../store.js';
-import { $, $$, avatar, confirmSheet, emptyState, openSheet, safely, sheetHeader, toast } from '../ui.js';
+import { saveCat, stopMed } from '../store.js';
+import { $, $$, avatar, confirmSheet, emptyState, openSheet, readPhoto, safely, sheetHeader, toast } from '../ui.js';
 import { addDays, ageText, esc, fmtDate, fmtMonth, fmtTime, fmtWeight, monthKey, todayKey } from '../utils.js';
 import { icon } from '../icons.js';
 import { agendaRow } from './home.js';
@@ -61,7 +61,12 @@ export function renderCatProfile(root, st, catId) {
     </header>
 
     <section class="profile">
-      ${avatar(cat, 'xl')}
+      <label class="avatar-edit" aria-label="${cat.photo ? 'Change' : 'Add'} profile picture">
+        ${avatar(cat, 'xl')}
+        <span class="avatar-badge">${icon('camera')}</span>
+        <input type="file" accept="image/*" hidden data-avatar-file>
+      </label>
+      ${cat.photo ? '' : '<span class="muted small">Tap to add a profile picture</span>'}
       <h2>${esc(cat.name)}</h2>
       <p class="muted">${[sexLabel(cat.sex), ageText(cat.birthday), cat.breed].filter(Boolean).map(esc).join(' · ')}</p>
       <div class="profile-stats">
@@ -165,6 +170,16 @@ export function renderCatProfile(root, st, catId) {
     </section>`;
 
   $('[data-edit]', root).onclick = () => openCatForm({ cat });
+  $('[data-avatar-file]', root).onchange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const photo = await readPhoto(file, 512, 0.8, true);
+      if (safely(() => saveCat({ ...cat, photo }))) toast('Profile picture updated');
+    } catch {
+      toast('Could not read that photo');
+    }
+  };
   $('[data-weigh]', root).onclick = () => openRecordForm({ catId: cat.id, category: 'weight' });
   $('[data-quick]', root).onclick = () => openQuickAdd({ catId: cat.id });
   $('[data-schedule]', root).onclick = () => openEventForm({ catId: cat.id, type: 'vet' });

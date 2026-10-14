@@ -506,7 +506,7 @@ export function openCatForm({ cat, onSaved } = {}) {
   const s = openSheet(`
     ${sheetHeader(cat ? `Edit ${esc(cat.name)}` : 'Add a cat')}
     <form class="form" novalidate>
-      ${group('Profile photo', photoField('photo', c.photo))}
+      ${group('Profile photo', photoField('photo', c.photo, 'Take or choose photo', { square: true }))}
       ${field('Name', `<input type="text" name="name" value="${esc(c.name || '')}" required autocomplete="off" placeholder="e.g. Milo">`)}
       <div class="row-2">
         ${field('Birthday', `<input type="date" name="birthday" value="${c.birthday || ''}" max="${todayKey()}">`, 'A guess is fine')}
